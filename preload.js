@@ -1,6 +1,6 @@
 const os = require("os");
 const path = require("path");
-const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 const Toastify = require("toastify-js");
 
 contextBridge.exposeInMainWorld("os", {
@@ -13,4 +13,10 @@ contextBridge.exposeInMainWorld("path", {
 
 contextBridge.exposeInMainWorld("Toastify", {
   toast: (options) => Toastify(options).showToast(),
+});
+
+contextBridge.exposeInMainWorld("ipcRenderer", {
+  send: (channel, data) => ipcRenderer.send(channel, data),
+  on: (channel, func) =>
+    ipcRenderer.on(channel, (event, ...args) => func(...args)),
 });
